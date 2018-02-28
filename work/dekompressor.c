@@ -23,9 +23,9 @@ struct SYM* getHeader(FILE *fp, int *numSymbol, struct SYM* syms, int *rest,unsi
 	}
 	while ((ch = fgetc(fp)) != EOF)
 	{
-		if (ch == '-')
+		if (ch == '.')
 		{
-			fseek(fp, -2, SEEK_CUR);
+			fseek(fp, -3, SEEK_CUR);
 			break;
 		}
 		temp[i++] = ch;
@@ -39,7 +39,7 @@ struct SYM* getHeader(FILE *fp, int *numSymbol, struct SYM* syms, int *rest,unsi
 	{
 		ch = fgetc(fp);
 		syms[i].ch = ch;
-		ch = fgetc(fp);
+		//ch = fgetc(fp);
 		fgets(temp, 7, fp);  //4-signs
 		syms[i].freq = (float)atof(temp);  //??? double to float
 	}

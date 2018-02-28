@@ -207,7 +207,7 @@ void makeHeader(FILE *fp, char* nameHeader, int numSymbol, struct SYM** psyms, i
 		fprintf(fp, "%s%d", nameHeader, numSymbol);
 		for (int i = 0; i < numSymbol; i++)
 		{
-			fprintf(fp, "%c-%.4f", psyms[i]->ch, psyms[i]->freq); //???float 4-9 signs
+			fprintf(fp, "%c%.4f", psyms[i]->ch, psyms[i]->freq); //???float 4-9 signs
 		}
 	}
 	else
