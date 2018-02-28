@@ -16,12 +16,14 @@
 #define CHECK_FALL 0
 #define CHECK_OK 1
 #define WRITE "wb"
+#define WRITE_READ "wb+"
 #define READ "rb"
 #define INTERRUPT_COUNTER 100
+
 int zip(int argc, UC*argv[],char extensionNew[])
-{
-
-
+{int timer = 16;
+	printf("\rremained %2.i", timer--); 
+	//printf("%s\n", argv[1]);// for check
 	int number0LastBit;//number added zerros in the last bit
 	int maxlengthArray;//the number of unique charactrs.Contains the numberof rows in the table occurences.
 	int countGap;
@@ -47,11 +49,13 @@ int zip(int argc, UC*argv[],char extensionNew[])
 		puts("ERROR: not file");
 		return 1;
 	}
+printf("\rremained %2.i", timer--); 
+
 	lengthInputName = 0;
 	lengthInputName = strlen(*(argv + 1));// will be use in the signature before nameFile
 	FILE*fp;
 	fp = 0x0;
-	
+
 	for (int i = 0;fp == NULL;i++)// check auto open
 	{	
 		fp = fopen(argv[1], READ);
@@ -63,29 +67,35 @@ int zip(int argc, UC*argv[],char extensionNew[])
 		
 		if (i >= INTERRUPT_COUNTER)
 		{
-			puts("\nERROR INTERRUPT_COUNTER for  file fp = 100\n");
+			printf("ERROR INTERRUPT_COUNTER for  file fp= %s press any buttom to exit\n", argv[1]);
+			fgetc(stdin);
 			break;
 		}
 	}
 	
-	//fp = fopen(argv[1], READ);// The input file
+
+printf("\rremained %2.i", timer--); 
+
 	if (fp == NULL)
 	{
 		puts("error opening file fp");
 		return 1;// error opening  files 
 	}
+//printf("opened %s \n", argv[1]);// for check
 	for (treeSym = 0x0, numberLetter = 0;(ch = fgetc(fp)) != EOF;numberLetter++)// are creating a tree from an input file and the total quantity of letters
 	{
-
 		checkchar = ch;
 		treeSym = makeTree(treeSym, ch, 128);//adress the first node
-
 	}
 	if (numberLetter == EMPTY)
 	{
-		printf("ERROR maketree.numberLenner = %llu", numberLetter);
+		printf("ERROR empty file = %llu, press buttom to exit", numberLetter);
+		fgetc(stdin);
+
 		return 1;
 	}
+
+printf("\rremained %2.i", timer--); 
 
 	totalStructInfile = 0;//The quantity of structs in file
 	countTotalStructInTree(treeSym, &totalStructInfile);
@@ -101,6 +111,9 @@ int zip(int argc, UC*argv[],char extensionNew[])
 		return  1;
 	}
 	*/
+
+printf("\rremained %2.i", timer--); 
+
 	psyms = 0x0;
 	while (!psyms)
 		psyms = (PSYM*)calloc(totalStructInfile + 2, sizeof(PSYM));// add 2 cell for 
@@ -113,6 +126,9 @@ int zip(int argc, UC*argv[],char extensionNew[])
 		puts("Error copy Tree to syms");
 		return 1;
 	}
+
+printf("\rremained %2.i", timer--); 
+
 	makeFrequencyForArray(psyms, numberLetter, maxlengthArray);//filling in the array of frequency of occurence
 
 	if (!checkSumForFrequencyArray(psyms))
@@ -124,6 +140,8 @@ int zip(int argc, UC*argv[],char extensionNew[])
 	//if necessary for the developer
 
 	//printArrayForCheck(psyms);
+
+printf("\rremained %2.i", timer--); 
 
 	maxCount = 0;
 	Tree2max(treeSym, &maxCount);// search the maximum value for a single symbol
@@ -138,6 +156,8 @@ int zip(int argc, UC*argv[],char extensionNew[])
 		return 1;
 	}
 
+printf("\rremained %2.i", timer--); 
+
 	psymsCode = 0x0;
 	while (!psymsCode)
 		psymsCode = (PSYM*)calloc(maxlengthArray + 2, sizeof(PSYM));
@@ -150,6 +170,8 @@ int zip(int argc, UC*argv[],char extensionNew[])
 
 	//printArrayForScreen(psyms);//if necessary for the developer
 
+printf("\rremained %2.i", timer--); 
+
 	countGap = 0;
 	countGap = checkMadeCodesUsually(psyms);
 	if (countGap > 0)
@@ -158,27 +180,41 @@ int zip(int argc, UC*argv[],char extensionNew[])
 		return 1;
 	}
 	//printArrayForScreen(psyms);//if necessary for the developer
+	
+	// target: create the adress for example : adress for fp101 for open and opened for record
+
+printf("\rremained %2.i", timer--); 
+
+	UC nameFile101[] = "file with 101.txt";
+	UC *pathFile101 = 0x0;
+	//UC *pathFile101 = "C:\\git\\work7\\file with 101.txt";
+	pathFile101 = createPathForFile(argv[1], nameFile101);
 	FILE*fp101;
 	fp101 = 0x0;
 	for (int i=0;fp101 == NULL ;i++)// check auto open
 	{
-		fp101 = fopen("file with 101.txt", WRITE);
+		fp101 = fopen(pathFile101, WRITE_READ);
 	
 		if (fp101 != NULL)
 			break;
 	printf("\rINTERRUPT_COUNTER for  file fp101 =%i",i);
 		if (i >= INTERRUPT_COUNTER)
 		{
-			puts("ERROR INTERRUPT_COUNTER for  file fp101 = 100\n");
+			printf("\nERROR INTERRUPT_COUNTER for  file fp101 = %s\n press any buttom to exit\n", pathFile101);
+			fgetc(stdin);
 			break;
 		}
 	}
-	
+
+printf("\rremained %2.i", timer--); 
+
+	/*
 	if (fp101 == NULL)
 	{
 		puts("ERROR opened file fp101");
 		return 1;
 	}
+	*/
 	long int pos = ftell(fp101);
 	lengthFp101 = EMPTY;
 	lengthFp101 = createFile101(fp, psyms, fp101);// 
@@ -188,28 +224,33 @@ int zip(int argc, UC*argv[],char extensionNew[])
 		return 1;
 	}
 
+printf("\rremained %2.i", timer--); 
 
+/*
 	fclose(fp101);// close for open for reading
 
-	fp101 = fopen("file with 101.txt", READ);
+	fp101 = fopen(pathFile101, READ);
 	if (fp101 == NULL)
 	{
 		puts("ERROR the second opened fp101 gor read");
 		return 1;
 	}
-	
+	*/
 	UC*nameOutputFile = 0x0;
 	UC*flagChange = 0x0; //"_copy";// add to the name if you want to notify the user about protecting an existing file
-	if ((nameOutputFile = createNameFile(argv[1], extensionNew, flagChange)) == NULL)
+	if ((nameOutputFile = changeExtensionFile(argv[1], extensionNew, flagChange)) == NULL)
 		return 1;
 	FILE*fpMOL;
 	fpMOL = 0x0;
 	fpMOL = fopen(nameOutputFile, WRITE);
 	if (fpMOL == NULL)
 	{
-		puts("ERROR opened the final file");
+		printf("ERROR opened the final file %s/ press any buttom to exit", nameOutputFile );
+		fgetc(stdin);
 		return 1;
 	}
+
+printf("\rremained %2.i", timer--); 
 
 
 	rewind(fp101);
@@ -221,11 +262,15 @@ int zip(int argc, UC*argv[],char extensionNew[])
 	if ((extension = findExtension(argv[1])) == NULL)
 		return 1;
 
+printf("\rremained %2.i", timer--); 
+
 	sizeInputFile = 0;
 	sizeInputFile = findSizeInputFile(fp);
 	result = creatHeaderInfinalFile(fpMOL, maxlengthArray, psyms, number0LastBit, sizeInputFile, extension, extensionNew);
 	if (result == CHECK_FALL)
 		return 1;
+
+printf("\rremained %2.i", timer--); 
 
 	positionEndHeader = WRONGNEGATIVEVALUE;
 	positionEndHeader = result;
@@ -241,6 +286,8 @@ int zip(int argc, UC*argv[],char extensionNew[])
 		printf("ATTENTIION: number0LastBit: to check the final assignment");
 	}
 
+printf("\rremained %2.i", timer--); 
+
 	result = WRONGNEGATIVEVALUE;
 	result = lengthFp101 - ((lengthFpMOL * SIZEPAK) - number0LastBit);
 	if (result != 0)
@@ -250,9 +297,10 @@ int zip(int argc, UC*argv[],char extensionNew[])
 	}
 	else
 	{
-		printf("The file is successfully archived, different=%li\nthe Adress for the file - %s\n", result, nameOutputFile);
+		// need for check
+		;//printf("The file is successfully archived, different=%li\nthe Adress for the file - %s\n", result, nameOutputFile);
 	}
-
+	
 	if (fp != NULL)
 	{
 		fclose(fp);
@@ -278,5 +326,8 @@ int zip(int argc, UC*argv[],char extensionNew[])
 		free(root);
 	if (treeSym != NULL)
 		free(treeSym);
+
+printf("\rremained %i\n", timer--);
+
 	return 0;
 }

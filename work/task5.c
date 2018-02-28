@@ -212,4 +212,3 @@ ULL sizeFile(FILE*fp)
 	fseek(fp, 0, SEEK_END);
 	return ftell(fp);
 }
-

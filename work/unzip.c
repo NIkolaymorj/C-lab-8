@@ -15,10 +15,14 @@
 #define CHECK_FALL 0
 #define CHECK_OK 1
 #define WRITE "wb"
+#define WRITE_READ "wb+"
 #define READ "rb"
+#define INTERRUPT_COUNTER 100
+
+
 int unzip(int argc, UC*argv[], char extensionEtalon[])
-{
-	
+{int timer = 5;
+printf("\rremained %.i", timer--);
 	if (argc == 1)
 	{
 		puts("ERROR: not file");
@@ -28,7 +32,6 @@ int unzip(int argc, UC*argv[], char extensionEtalon[])
 	int number0LastBit;//number added zerros in the last bit
 	int maxlengthArray;//the number of unique charactrs.Contains the numberof rows in the table occurences.
 	struct SYM *root;
-	FILE*fp101;//file with changing of data of input file. outcome - Must had the file with '1' and '0'; 
 	FILE*fpMOL;// result of our work
 	long int lengthFpMOL;
 	PSYM *psyms;
@@ -52,23 +55,54 @@ int unzip(int argc, UC*argv[], char extensionEtalon[])
 	else
 		;//puts("create header in the final file was OK\n");
 
+printf("\rremained %2.i", timer--); 
+
 	psymsCode = 0x0;
 	while (!psymsCode)
 		psymsCode = (PSYM*)calloc(maxlengthArray + 2, sizeof(PSYM));
 
 	copyParrToChange(psyms, psymsCode);
+
+printf("\rremained %2.i", timer--); 
+
 	root = 0x0;
 	root = buildTree(psymsCode, maxlengthArray);
 
 	//	printArrayForScreen(psyms);
 	makeCodes(root);
 	//printArrayForScreen(psyms);
-	fp101 = fopen("file with 101.txt", WRITE);
+	
+	//file with changing of data of input file. outcome - Must had the file with '1' and '0'; 
+	UC nameFile101[] = "file with 101.txt";
+	UC *pathFile101 = 0x0;
+	pathFile101 = createPathForFile(argv[1], nameFile101);
+	FILE*fp101;
+	fp101 = 0x0;
+	for (int i = 0;fp101 == NULL;i++)// check auto open
+	{
+		fp101 = fopen(pathFile101, WRITE_READ);
+
+		if (fp101 != NULL)
+			break;
+		printf("\rINTERRUPT_COUNTER for  file fp101 =%i", i);
+		if (i >= INTERRUPT_COUNTER)
+		{
+			printf("\nERROR INTERRUPT_COUNTER for  file fp101 = %s\n press any buttom to exit\n", pathFile101);
+			fgetc(stdin);
+			break;
+		}
+	}
+	//old fersion, bad of work
+	/*fp101 = fopen("file with 101.txt", WRITE);
 	if (fp101 == NULL)
 	{
 		puts("ERROR opened the file .101");
 		return 1;
 	}
+	*/
+
+printf("\rremained %2.i", timer--); 
+
 	lengthFpMOL = readPak(fp101, fpMOL, number0LastBit);// final
 	if (lengthFpMOL == EMPTY)
 	{
@@ -76,9 +110,11 @@ int unzip(int argc, UC*argv[], char extensionEtalon[])
 		return 1;
 	}
 
-	fclose(fp101);// close, for open of reading
+//	fclose(fp101);// close, for open of reading
+//fp101 = fopen("file with 101.txt", READ);
 
-	fp101 = fopen("file with 101.txt", READ);
+printf("\rremained %2.i", timer--); 
+
 	rewind(fp101);
 
 	FILE *fpOut = 0x0;
@@ -86,7 +122,7 @@ int unzip(int argc, UC*argv[], char extensionEtalon[])
 	UC*newExtension = extension;
 	UC* nameOutputFile = 0x0;
 	do {
-		nameOutputFile = createNameFile(argv[1], newExtension, flagCopy);
+		nameOutputFile = changeExtensionFile(argv[1], newExtension, flagCopy);
 
 		if (nameOutputFile == NULL)
 			return 1;
@@ -107,6 +143,7 @@ int unzip(int argc, UC*argv[], char extensionEtalon[])
 		return 1;
 	}
 
+printf("\rremained %i\n", timer--);
 
 	if (CHECK_FALL == createFp(fp101, root, fpOut))
 	{
@@ -117,7 +154,7 @@ int unzip(int argc, UC*argv[], char extensionEtalon[])
 	{
 		ULL result = 0;
 		if ((result = (sizeFile(fpOut) - sizeInputFile)) == 0)
-			printf("The file has been successfully unpacked \n The adress for the file - %s\n", nameOutputFile);
+			;//printf("The file has been successfully unpacked \n The adress for the file - %s\n", nameOutputFile);// need for check
 		else
 			printf("The file has been unpacked with corruption =%llu\n The adress for the file - %s\n", result, nameOutputFile);
 
@@ -134,5 +171,8 @@ int unzip(int argc, UC*argv[], char extensionEtalon[])
 		free(root);
 	if (nameOutputFile != NULL)
 		free(nameOutputFile);
+
+printf("\rremained %i\n", timer--);
+
 	return 0;
 }

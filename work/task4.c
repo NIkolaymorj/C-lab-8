@@ -309,7 +309,7 @@ UC*findExtension(UC*string)
 	return ERRORPointer;//
 }
 
-UC*createNameFile(UC string[], char newExtension[],UC*flagCopy)
+UC*changeExtensionFile(UC string[], char newExtension[],UC*flagCopy)
 {
 	int lengthFlag = 0;
 	if (flagCopy == NULL)
@@ -319,7 +319,7 @@ UC*createNameFile(UC string[], char newExtension[],UC*flagCopy)
 	else
 		lengthFlag = strlen(flagCopy);
 
-	printf("the Old Name of file =%s\n",string);
+//	printf("the Old Name of file =%s\n",string);// need for check
 	UC oldNameFile[MAXSYMB];
 	int length = strlen(string);
 	strncpy(oldNameFile, string, length);
@@ -357,7 +357,7 @@ UC*createNameFile(UC string[], char newExtension[],UC*flagCopy)
 		//add new extension
 		strncat(newNameFile, newExtension,lengthExtension);
 		newLength = strlen(newNameFile);
-		printf("the new Name of file =%s\n", newNameFile);
+	//	printf("the new Name of file =%s\n", newNameFile);
 		return newNameFile;
 	}
 		else
@@ -366,4 +366,42 @@ UC*createNameFile(UC string[], char newExtension[],UC*flagCopy)
 			return ERRORPointer;//
 		}
 	}
+
+UC*createPathForFile(UC argv[],UC nameFile[])// need for create the adress for example : adres for fp101 for open
+{
+
+	UC newPatchBuf[2*MAXSYMB];
+	UC oldPatch[2*MAXSYMB];
+	int lengthOldPatch = strlen(argv);
+	strncpy(oldPatch,argv,lengthOldPatch);
+	oldPatch[lengthOldPatch] = '\0';
+	char separator = '\\';
+	for (int last = lengthOldPatch;(last >= 0);last--)
+	{
+		if (oldPatch[last] == separator)
+		{
+			oldPatch[++last] = '\0';
+			break;
+		}
+		if (last == 0)
+		{
+			oldPatch[last] = '\0';
+			break;
+		}
+	}
+
+	int lengthNameFile = strlen(nameFile);
+	lengthOldPatch = strlen(argv);
+	strncpy(newPatchBuf, oldPatch, lengthOldPatch);
+	newPatchBuf[lengthOldPatch] = '\0';
+	strncat(newPatchBuf, nameFile, lengthNameFile);
+	newPatchBuf[lengthOldPatch+lengthNameFile] = '\0';
+	int lengthNewPatch = strlen(newPatchBuf);
+	UC *newPatch = 0x0;
+	while (newPatch == NULL)
+		newPatch = (UC*)calloc(lengthNewPatch + 2, sizeof(UC));
+	strncpy(newPatch, newPatchBuf, lengthNewPatch);
+
+	return newPatch;
+}
 

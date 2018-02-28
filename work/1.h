@@ -62,8 +62,7 @@ void brushAdresses(TSYM*psymsCode[]);
 void brushString(char *string);
 ULL findSizeInputFile(FILE*fp);// determitation of the size of the file
 UC*findExtension(UC*string);
-//UC*createNameFile(UC string[], char newExtension[], UC*flagCopy);
-
+UC*createPathForFile(UC argv[], UC nameFile[]);// need for create the adress for example : adres for fp101 for open
 int unzip(int argc, UC*argv[], char extension[]);
 //// unzip
 
@@ -79,5 +78,5 @@ int unpack(char buf, FILE*fp);
 int createFp(FILE*fp101, TSYM*root, FILE*fp);
 void copyParrToChange(PSYM*psyms, PSYM*psymsCode);
 ULL findSizeInputFile(FILE*fp);
-UC*createNameFile(UC string[], char newExtension[], UC*flagCopy);
+UC*changeExtensionFile(UC string[], char newExtension[], UC*flagCopy);
 ULL sizeFile(FILE*fp);
