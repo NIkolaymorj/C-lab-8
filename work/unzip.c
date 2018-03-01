@@ -160,17 +160,43 @@ printf("\rremained %i\n", timer--);
 
 
 	}
-	fclose(fpOut);
-	fclose(fp101);
-	fclose(fpMOL);
+	if (fpOut != NULL)
+	{
+		fclose(fpOut);
+		fpOut = NULL;
+	}
 
-	if (extension != NULL)
-		free(extension);
+	if (fp101 != NULL)
+	{
+		fclose(fp101);
+		fp101 = NULL;
+	}
+	if (fpMOL != NULL)
+	{
+		fclose(fpMOL);
+		fpMOL = NULL;
+	}
+
+
+	if (nameOutputFile != NULL)
+	{
+		free(nameOutputFile);
+		nameOutputFile = NULL;
+	}
 
 	if (root != NULL)
+	{
 		free(root);
-	if (nameOutputFile != NULL)
-		free(nameOutputFile);
+		root = NULL;
+	}
+
+
+	if (extension != NULL)
+	{
+		free(extension);
+		extension = NULL;
+	}
+	
 
 printf("\rremained %i\n", timer--);
 
