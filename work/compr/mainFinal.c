@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	if (argc > 1)
 		fp = fopen(argv[1], READ);
 	else
-		fp = fopen("left.bmp", READ);
+		fp = fopen("lt1.txt", READ);
 	if (!fp)
 	{
 		perror("File:");
@@ -89,6 +89,9 @@ int main(int argc, char* argv[])
 			i++;
 		}
 	}
+	else
+		sizeExp = 3;
+
 	fprintf(wp, "%d", sizeExp);
 	fprintf(wp, "%d", count);
 	char exp[10] = { 0 };
@@ -111,6 +114,16 @@ int main(int argc, char* argv[])
 			i++;
 		}
 		for (int i = 0; i < j; i++)
+			fputc(exp[i], wp);
+	}
+	else
+	{
+		i = 0;
+		exp[0] = 't';
+		exp[1] = 'x';
+		exp[2] = 't';
+		exp[3] = '\0';
+		for (int i = 0; i < 3; i++)
 			fputc(exp[i], wp);
 	}
 
