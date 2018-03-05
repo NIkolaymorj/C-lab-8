@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
 		syms[i].freq = 0;
 		syms[i].left = NULL;
 		syms[i].right = NULL;
+		header.freq[i] = syms[i].freq;
 	}
 
 	while (!feof(inp))        //считаем кол-во одинаковых символов
@@ -46,22 +47,23 @@ int main(int argc, char *argv[])
 		syms[ch_s].freq++;
 		count++;
 	}
-	header.size_orig = count; // размер файла
-	
+			
 	sortCh(syms, CH); //сортировка
 
 	int count_syms = 0;
 
 	for (int i = 0; i<CH; i++) //считаем частоту символов
 	{
+				
 		if (syms[i].freq > 0)
 		{
 			syms[i].freq = syms[i].freq / count;
 			header.freq[i] = syms[i].freq;
-			printf("ch: %c - %.2f\n", syms[i].ch, syms[i].freq);
+			printf("Syms ch: %c - %.2f\n", syms[i].ch, syms[i].freq);
 			count_syms++;
 		}
 	}
+	//printf("count_syms %d\n",count_syms);
 
 	for (int i = 0; i<CH; i++) 
 	{
@@ -73,7 +75,7 @@ int main(int argc, char *argv[])
 	makeCodes(root); //получение кодов
 		
 	fseek(inp, sizeof(inp), SEEK_SET);
-
+	
 	fp101 = fopen("101.txt", "wt");
 	int ch=0; 			 
 	while ((ch = fgetc(inp)) != EOF) //кодиование
@@ -87,39 +89,46 @@ int main(int argc, char *argv[])
 	}
 	fclose(fp101);
 	fclose(inp);
-	fp101 = fopen("101.txt", "rt"); 
+	fp101 = fopen("101.txt", "rb"); 
 	
 	fseek(fp101, 0, SEEK_END); 
 	int size = ftell(fp101);
+	header.size_orig = size;
 	if (size % BYTE)
 		header.tail = BYTE - (size % BYTE); //Размер хвоста
 	else
 		header.tail = 0;
 	printf("tail: %d\n", header.tail);
 	
-	fseek(fp101, sizeof(fp101), SEEK_SET);
-	outp = fopen("fzip.myzip", "wt");
+	//fseek(fp101, sizeof(fp101), SEEK_SET);
+	//fclose(fp101);
+	rewind(fp101);
+	outp = fopen("fzip.myzip", "wb");
 	
-	fprintf(outp, "%s %d %d ", header.name_orig, header.size_orig, header.tail);
+	fprintf(outp, "%s %d ", header.name_orig, header.tail);
 
-	for (int i = 0; i < CH; i++)
-		fprintf(outp, "%.3f ", header.freq[i]);
+	for (int i = 0; i < count_syms; i++)
+		fprintf(outp, "%.2f ", header.freq[i]);
 
 	int count_byte = 0;
 	unsigned char byte[BYTE];
-	
+	ch = 0;
 	while ((ch = getc(fp101)) != EOF)
 	{
+		printf("%c: ", ch);
+		printf("%d", count_byte);
 		byte[count_byte] = ch;
+		
 		if (count_byte == BYTE - 1)
 		{
 			count_byte = 0;
 			fputc(pack(byte), outp);
 			continue;
 		}
+		printf("\n");
 		count_byte++;
 	}
-	printf("count_byte %d\n", count_byte);
+	//printf("count_byte %d\n", count_byte);
 	for (int i = count_byte; i < BYTE; i++)
 		byte[i] = '0';
 
