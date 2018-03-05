@@ -71,13 +71,18 @@ void makeCodes(SYM *root)
 unsigned char pack(unsigned char buf[])
 {
 	union CODE code;
-	code.byte.b1 = buf[0] - '0';
-	code.byte.b2 = buf[1] - '0';
-	code.byte.b3 = buf[2] - '0';
-	code.byte.b4 = buf[3] - '0';
-	code.byte.b5 = buf[4] - '0';
-	code.byte.b6 = buf[5] - '0';
-	code.byte.b7 = buf[6] - '0';
-	code.byte.b8 = buf[7] - '0';
+	code.byte.b1 = buf[0];
+	code.byte.b2 = buf[1];
+	code.byte.b3 = buf[2];
+	code.byte.b4 = buf[3];
+	code.byte.b5 = buf[4];
+	code.byte.b6 = buf[5];
+	code.byte.b7 = buf[6];
+	code.byte.b8 = buf[7];
+
+	/*for (int i = 0; i < 8; i++)
+		printf("%c", buf[i]);
+	printf("\n");
+	printf("%c\n", code.ch);*/
 	return code.ch;
 }
